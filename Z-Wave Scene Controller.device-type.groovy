@@ -238,7 +238,7 @@ def associateHub() {
     	// For the first button:
     	if (buttonNum == 1) {
             // If there is an associated load
-            if (getDataByName("associatedLoad") != "0") {
+            if (getDataByName("associatedLoad") != "0" && getDataByName("associatedLoad") != null) {
                 // Unassociate the hub from button 0 and associate the load.  That way we won't get button presses for the switch
                 commands << zwave.associationV1.associationRemove(groupingIdentifier: buttonNum, nodeId: zwaveHubNodeId).format()
                 commands << zwave.associationV1.associationSet(groupingIdentifier: buttonNum, nodeId: integerhex(getDataByName("associatedLoadId"))).format()
