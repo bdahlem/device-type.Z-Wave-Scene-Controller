@@ -245,7 +245,6 @@ def associateHub() {
                 if (getDataByName("associatedLoadId")) {        	
                     commands << zwave.associationV1.associationRemove(groupingIdentifier: buttonNum, nodeId: integerhex(getDataByName("associatedLoadId"))).format()
                 }
-                commands << zwave.associationV1.associationGet(groupingIdentifier: buttonNum).format()
             }
         }
         // For the other buttons:
