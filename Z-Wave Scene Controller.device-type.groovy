@@ -193,7 +193,10 @@ def configurationCmds() {
     ]
     
     commands << associateHub()
-    
+
+    // Reset to sceneId 0 (no scene) initially to turn off all LEDs.
+    commands << zwave.sceneActuatorConfV1.sceneActuatorConfReport(dimmingDuration: 255, level: 255, sceneId: 0).format()
+
     delayBetween(commands)
 }
 
