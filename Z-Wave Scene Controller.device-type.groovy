@@ -229,6 +229,9 @@ def associateHub() {
     
     // Loop through all the buttons on the controller
     for (def buttonNum = 1; buttonNum <= integer(getDataByName("numButtons")); buttonNum++) {
+        // Make sure the scene controller is configured with one scene per group, with the same number.
+        commands << zwave.sceneControllerConfV1.sceneControllerConfSet(groupId:buttonNum, sceneId:buttonNum).format()
+
     	// For the first button:
     	if (buttonNum == 1) {
             // If there is an associated load
