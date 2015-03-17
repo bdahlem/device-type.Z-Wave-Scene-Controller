@@ -193,7 +193,10 @@ def configurationCmds() {
     ]
     
     commands << associateHub()
-    
+
+    // Reset to sceneId 0 (no scene) initially to turn off all LEDs.
+    commands << zwave.sceneActuatorConfV1.sceneActuatorConfReport(dimmingDuration: 255, level: 255, sceneId: 0).format()
+
     delayBetween(commands)
 }
 
@@ -229,10 +232,13 @@ def associateHub() {
     
     // Loop through all the buttons on the controller
     for (def buttonNum = 1; buttonNum <= integer(getDataByName("numButtons")); buttonNum++) {
+        // Make sure the scene controller is configured with one scene per group, with the same number.
+        commands << zwave.sceneControllerConfV1.sceneControllerConfSet(groupId:buttonNum, sceneId:buttonNum).format()
+
     	// For the first button:
     	if (buttonNum == 1) {
             // If there is an associated load
-            if (getDataByName("associatedLoad") != "0") {
+            if (getDataByName("associatedLoad") != "0" && getDataByName("associatedLoad") != null) {
                 // Unassociate the hub from button 0 and associate the load.  That way we won't get button presses for the switch
                 commands << zwave.associationV1.associationRemove(groupingIdentifier: buttonNum, nodeId: zwaveHubNodeId).format()
                 commands << zwave.associationV1.associationSet(groupingIdentifier: buttonNum, nodeId: integerhex(getDataByName("associatedLoadId"))).format()
@@ -245,7 +251,6 @@ def associateHub() {
                 if (getDataByName("associatedLoadId")) {        	
                     commands << zwave.associationV1.associationRemove(groupingIdentifier: buttonNum, nodeId: integerhex(getDataByName("associatedLoadId"))).format()
                 }
-                commands << zwave.associationV1.associationGet(groupingIdentifier: buttonNum).format()
             }
         }
         // For the other buttons:
